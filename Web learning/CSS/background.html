@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>Contoh Background Warna</title>
+    <meta content="" />
+    <style>
+      header {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+      body {
+        background-image: url("wave.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      p {
+        background-color: violet;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Belajar Background di CSS</h1>
+    </header>
+    <p>Background color dengan heksa</p>
+    <p
+      style="
+        background: #ffffff;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 1) 2%,
+          rgba(9, 9, 121, 1) 32%,
+          rgba(0, 212, 255, 1) 79%
+        );
+      "
+    >
+      background dengan radial gradient
+    </p>
+  </body>
+</html>
