@@ -1,0 +1,192 @@
+<html>
+  <head>
+    <title>Contoh formating text</title>
+    <meta content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      header {
+        text-align: center;
+      }
+      .text-left {
+        text-align: left;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-justify {
+        text-align: justify;
+      }
+      .rtl {
+        direction: rtl;
+      }
+      .ltr {
+        direction: ltr;
+      }
+      .decnone {
+        text-decoration: none;
+      }
+      .dec-ul {
+        text-decoration: underline;
+      }
+      .dec-ol {
+        text-decoration: overline;
+      }
+      .dec-lt {
+        text-decoration: line-through;
+      }
+      p {
+        line-height: 1.5;
+      }
+      h1 {
+        text-transform: uppercase;
+      }
+      .upper {
+        text-transform: uppercase;
+      }
+      .lower {
+        text-transform: lowercase;
+      }
+      .capt {
+        text-transform: capitalize;
+      }
+      .small {
+        font-size: 8px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .line-height {
+        line-height: 2;
+      }
+
+      .indent {
+        text-indent: 2em;
+      }
+
+      .nowrap {
+        white-space: break-spaces;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Belajar CSS Text Align</h1>
+    </header>
+    <article>
+      <p class="text-left">
+        Paragraf ini akan rata kiri, menggunakan text align left.
+      </p>
+      <p class="text-center">
+        Paragraf ini akan rata tengah, menggunakan text align center.
+      </p>
+      <p class="text-right">
+        Paragraf ini akan rata kanan, menggunakan text align right.
+      </p>
+      <p class="text-justify">
+        Paragraf ini akan rata kiri dan rata kanan, tetapi menggunakan text
+        align justify
+      </p>
+    </article>
+    <header>
+      <h1>Menggunakan text direction di CSS</h1>
+    </header>
+    <article>
+      <p class="rtl">
+        Ini adalah penggunaan kode direction rtl, menghasilkan runut teks dari
+        kanan ke kiri.
+      </p>
+      <p class="ltr">
+        Ini adalah penggunaan kode direction ltr, menghasilkan runut teks dari
+        kiri ke kanan.
+      </p>
+    </article>
+    <header>
+      <h1>Menggunakan Text Decoration di CSS</h1>
+    </header>
+    <article>
+      <p class="decnone">
+        Ini adalah kalimat tanpa decoration, dengan kode decoration none.
+      </p>
+      <p class="dec-ul">
+        Ini adalah kalimat dengan dekorasi garis bawah, kode decoration
+        underline
+      </p>
+      <p class="dec-ol">
+        Ini adalah kalimat dengan dekorasi garis atas, kode decoration overline
+      </p>
+      <p class="dec-lt">
+        Ini adalah kalimat dengan dekorasi garis tengah, kode decoration
+        line-througt.
+        <span style="text-decoration: line-through wavy green"
+          >Tambahan, kalimat ini menggunakan tag span dan text decoration wavi
+          green.</span
+        >
+      </p>
+    </article>
+    <header>
+      <h1>Belajar Text transform CSS</h1>
+    </header>
+    <article>
+      <p class="upper">
+        teks ini ditulis dengan huruf kecil, tetapi diubah dengan kode
+        text-transform uppercase
+      </p>
+      <p class="lower">
+        TEKS INI DITULIS DENGAN KAPITAL, TETAPI DI UBAH DENGAN TEXT-TRANSFORM
+        LOWERCASE.
+      </p>
+
+      <h1 style="letter-spacing: -2px; word-spacing: 4px">
+        Contoh Text Spacing
+      </h1>
+      <p class="small">Contoh teks dengan ukuran kecil</p>
+
+      <p class="indent">
+        Ini adalah contoh paragraf dengan teks indent. Artinya, teks pada baris
+        pertama akan masuk ke dalam sepanjang 2em. Panjang 2em sama dengan
+        2x16px, maka 2em akan bernilai 32px.
+      </p>
+      <p class="line-height">
+        Ini adalah contoh paragraf tanpa indent. Paragraf normal dengan line
+        height sebesar 1.6. Normalnya line height tiap teks adalah 1. Tapi line
+        height 1 sulit dibaca jika ada banyak teks. Line height 1.6 akan membuat
+        teks jadi mudah dibaca, karena ada spasi atau jarak di antara baris.
+      </p>
+
+      <!--prettier-ignore-->
+      <p class="nowrap">
+                   Ini conoth paragraf dengan White-space: break-spaces. Artinya wthie
+        space pada paragraf ini, akan mengikut          i spasi seperti yang ditulis di
+
+
+
+
+        dalam HTML.
+      </p>
+      '
+    </article>
+
+    <p
+      style="
+        width: 320px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      "
+    >
+      Ini adalah contoh paragraf yang cukup panjang. Ukuran elemen paragraf ini
+      sudah diatur pada CSS dengan panjang 320px. Akan tetapi panjang teks pada
+      paragraf ini melebihi ukuran paragraf. Maka akan terjadi teks overflow.
+      Tapi tenang saja, teks overflow bisa kita atur di CSS dengan properti
+      text-overflow.
+    </p>
+
+    <h1 style="color: lime; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8)">
+      Contoh Text shadaw
+    </h1>
+  </body>
+</html>
