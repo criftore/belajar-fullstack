@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Homepage</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        color: navy;
+      }
+      input,
+      fieldset,
+      legend {
+        border-radius: 20px;
+        border: 2px solid navy;
+      }
+      .form-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      label {
+        text-align: left;
+        width: 150px;
+        font-weight: bold;
+      }
+      input {
+        padding: 5px;
+        width: 200px;
+      }
+      .separator {
+        width: 20px;
+        text-align: center;
+      }
+      .kosong {
+        width: 200px;
+      }
+    </style>
+  </head>
+  <body style="background-color: darkgrey">
+    <header>
+      <h1>ANON-FILE</h1>
+    </header>
+    <article>
+      <form action="login.js" method="post">
+        <fieldset style="padding: 20px; background-color: whitesmoke">
+          <legend
+            style="
+              text-align: center;
+              font-weight: bolder;
+              background-color: aquamarine;
+              padding: 5px;
+            "
+          >
+            WELCOME
+          </legend>
+          <div class="form-group">
+            <label>Username</label>
+            <span class="separator">:</span>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="username..."
+            />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <span class="separator">:</span>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="email..."
+            />
+          </div>
+          <div style="text-align: center">
+            <input
+              type="submit"
+              value="Login"
+              style="
+                width: 150px;
+                text-align: center;
+                cursor: pointer;
+                padding: 5px;
+                background-color: aquamarine;
+                font-weight: bold;
+              "
+            />
+          </div>
+        </fieldset>
+      </form>
+    </article>
+  </body>
+</html>
