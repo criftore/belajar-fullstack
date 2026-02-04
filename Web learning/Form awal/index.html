@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Homepage</title>
-    <meta viewport="width" ="device-width," initial-scale="1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
         box-sizing: border-box;
@@ -11,6 +11,9 @@
       input,
       fieldset,
       legend {
+        width: 100%;
+        max-width: 450px;
+        margin: auto;
         border-radius: 20px;
         border: 2px solid navy;
       }
@@ -22,12 +25,14 @@
       }
       label {
         text-align: left;
-        width: 150px;
+        width: 120px;
+        min-width: 80px;
         font-weight: bold;
       }
       input {
         padding: 5px;
-        width: 200px;
+        width: 100%;
+        max-width: 200px;
       }
       .separator {
         width: 20px;
