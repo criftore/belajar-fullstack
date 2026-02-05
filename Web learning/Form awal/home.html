@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    style="background-color: darkgrey; text-align: center; padding-top: 50px"
+  >
+    <h1
+      id="Salam"
+      style="
+        background-color: whitesmoke;
+        padding: 20px;
+        border-radius: 20px;
+        display: inline-block;
+        border: 2px solid navy;
+      "
+    >
+      Sedang Memuat...
+    </h1>
+    <p style="justify-content: center">
+      <input
+        type="submit"
+        value="Logout"
+        style="
+          width: 150px;
+          text-align: center;
+          cursor: pointer;
+          padding: 5px;
+          background-color: aquamarine;
+          font-weight: bold;
+        "
+        onclick="prosesLogout()"
+      />
+    </p>
+    <div id="notifCustom" class="popup-notif">
+      <span id="pesanNotif">Pesan di sini...</span>
+    </div>
+    <script src="user-index.js"></script>
+  </body>
+</html>

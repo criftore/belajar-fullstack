@@ -3,59 +3,14 @@
   <head>
     <title>Homepage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-        box-sizing: border-box;
-        color: navy;
-      }
-      input,
-      fieldset,
-      legend {
-        border-radius: 20px;
-        border: 2px solid navy;
-      }
-
-      fieldset,
-      legend {
-        width: 100%;
-        max-width: 450px;
-        margin: auto;
-      }
-      .form-group {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-
-      input {
-        padding: 5px;
-        width: 100%;
-        max-width: 200px;
-      }
-
-      label {
-        text-align: left;
-        width: 120px;
-        min-width: 80px;
-        font-weight: bold;
-      }
-
-      .separator {
-        width: 20px;
-        text-align: center;
-      }
-      .kosong {
-        width: 200px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body style="background-color: darkgrey">
     <header>
       <h1 style="text-align: center">ANON-FILE</h1>
     </header>
     <article>
-      <form action="login.js" method="post">
+      <form action="home.html" method="get" onsubmit="return prosesLogin();">
         <fieldset style="padding: 20px; background-color: whitesmoke">
           <legend
             style="
@@ -104,5 +59,10 @@
         </fieldset>
       </form>
     </article>
+
+    <div id="notifCustom" class="popup-notif">
+      <span id="pesanNotif">Pesan di sini...</span>
+    </div>
+    <script src="user-index.js"></script>
   </body>
 </html>
