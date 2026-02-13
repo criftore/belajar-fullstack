@@ -1,16 +1,49 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
-    <title>Belajar Output Javascrift</title>
-  </head>
-  <body>
-    <button onclick="sayHello()">Klik disini</button>
-
+    <title>Hello World Javascript</title>
     <script>
-      alert("Selamat datang di tutorial javascrift");
-      function sayHello() {
-        alert("Hello!");
-      }
+      console.log("Hello JS dari Head");
     </script>
+  </head>
+  <>
+    <a href="#" onclick="alert('Yey! contoh JS inline berhasil')">Klik aku!</a>
+    <textarea id="areateks" cols="30" rows="10"></textarea>
+    <p>Panjang: <span id="counter">0</span> karakter</p>
+     <p class="paragraf">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quo quaerat recusandae qui ullam eaque cumque ea fugit,
+        debitis commodi ipsum illo dolorum consequatur sed laudantium suscipit quis magni,
+        maiores in?</p>
+
+    <p class="paragraf">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quo quaerat recusandae qui ullam eaque cumque ea fugit,
+        debitis commodi ipsum illo dolorum consequatur sed laudantium suscipit quis magni,
+        maiores in?</p>
+
+    <p class="paragraf">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quo quaerat recusandae qui ullam eaque cumque ea fugit,
+        debitis commodi ipsum illo dolorum consequatur sed laudantium suscipit quis magni,
+        maiores in?</p>
+
+  <h1>Ubah warna</h1>
+  <label>Warna latar</label>
+  <input type="color" id="warnaLatar" />
+  <br />
+  <label>Warna teks</label>
+  <input type="color" id="warnaTeks" />
+  <br />
+
+  <button onclick="holla()">Holla!</button>
+  <button id="hellow">Hello</button>
+  <button id="dbl">Double Click Me</button>
+
+
+    <script src="kp.js">
+      console.log("Saya belajar Javascript");
+      document.write("Hello World!");
+      console.log("Hello JS dari Body");
+      
+    </script>
+    
   </body>
 </html>
