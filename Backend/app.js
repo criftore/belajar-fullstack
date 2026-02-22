@@ -84,6 +84,10 @@ app.get("/baca-catatan", (req, res) => {
     </style>
     <div class="container">
       <h1> Catatan Saya</h1>
+      <form action="/cari" method="GET">
+      <input type="text" name="keyword" placeholder="Cari catatan...">
+      <button type="submit">Cari</button>
+      </form>
     `;
 
     listCatatan.forEach((item) => {
@@ -109,11 +113,13 @@ app.get("/edit/:id", (req, res) => {
   const idCari = req.params.id;
 
   fs.readFile(pathFile, "utf-8", (err, data) => {
-    if(err) return res.send("Gagal membaca data!");
+    if (err) return res.send("Gagal membaca data!");
     const listCatatan = JSON.parse(data);
 
-    const catatanDitemukan = listCatatan.find(item => item.id.toString() === idCari);
-    if(!catatanDitemukan) return res.send ("Catatan tidak ditemukan!");
+    const catatanDitemukan = listCatatan.find(
+      (item) => item.id.toString() === idCari,
+    );
+    if (!catatanDitemukan) return res.send("Catatan tidak ditemukan!");
 
     res.send(`
       <h1>Edit Catatan</h1>
@@ -131,12 +137,16 @@ app.post("/update/:id", (req, res) => {
   const isiTerbaru = req.body.isi_baru;
 
   fs.readFile(pathFile, "utf-8", (err, data) => {
-    if (err) return res.send ("Gagal membaca data!");
+    if (err) return res.send("Gagal membaca data!");
     let listCatatan = JSON.parse(data);
 
-    listCatatan = listCatatan.map (item => {
+    listCatatan = listCatatan.map((item) => {
       if (item.id.toString() === idUpdate) {
-        return { ...item, isi: isiTerbaru, waktu: new Date().toLocaleString() + " (Edited)"};
+        return {
+          ...item,
+          isi: isiTerbaru,
+          waktu: new Date().toLocaleString() + " (Edited)",
+        };
       }
       return item;
     });
@@ -161,6 +171,55 @@ app.get("/hapus/:idCatatan", (req, res) => {
       if (err) return res.send("Gagal menghapus!");
       res.redirect("/baca-catatan");
     });
+  });
+});
+
+app.get("/cari", (req, res) => {
+  const kataKunci = (req.query.keyword || "").toLowerCase();
+
+  fs.readFile(pathFile, "utf-8", (err, data) => {
+    if (err || !data) return res.send("Database kosong!");
+
+    const listCatatan = JSON.parse(data);
+
+    const hasilFilter = listCatatan.filter((item) =>
+      item.isi.toLowerCase().includes(kataKunci),
+    );
+
+    let tampilan = `
+    <style>
+    body {
+    font-family: sans-serif; background-color: #f4f4f9; padding:20px}
+    .container {
+    max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px:
+    }
+    .card {
+    border-left: 5px solid #28a745; background: #f9f9f9: padding: 15px; margin-bottom: 15px; border-radius: 10px;
+    }
+    .waktu {color: #666; font-size: 0.8em;}
+    </style>
+
+    <div class="container">
+    <h1>Hasil Pencarian untuk: "${kataKunci}"</h1>
+    <p>Ditemukan ${hasilFilter.length} catatan.</p>
+    <hr>
+    `;
+    if (hasilFilter.length === 0) {
+      tampilan += "<p>Tidak ditemukan catatan yang cocok.</p>";
+    } else {
+      hasilFilter.forEach((item) => {
+        tampilan += `
+        <div class="card">
+        <small class="waktu">${item.waktu}</small>
+        <p>${item.isi}</p>
+        </div>
+        `;
+      });
+    }
+    tampilan += `<br><a href="/baca-catatan" style="text-decoration:none; color:#007bff;"><=Kembali ke Semua Catatan</a>
+    </div>
+    `;
+    res.send(tampilan);
   });
 });
 
