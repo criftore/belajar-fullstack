@@ -8,6 +8,14 @@ app.use(express.urlencoded({ extended: true }));
 
 const pathFile = path.join(__dirname, "database_lokal", "catatan.json");
 
+const folderPath = path.join(__dirname, "database_lokal");
+if (!fs.existsSync(folderPath)) {
+  fs.mkdirSync(folderPath);
+}
+if (!fs.existsSync(pathFile)) {
+  fs.writeFileSync(pathFile, JSON.stringify([], null, 2));
+}
+
 app.get("/", (req, res) => {
   res.send(
     "<h1>Halo! ini server express Pertama Saya</h1><p>Selamat Datang di H3.</p>",
@@ -30,8 +38,11 @@ app.post("/simpan", (req, res) => {
 
   fs.readFile(pathFile, "utf-8", (err, data) => {
     let listCatatan = [];
-    if (!err && data) {
-      listCatatan = JSON.parse(data);
+
+    try {
+      listCatatan = JSON.parse(data || "[]");
+    } catch (e) {
+      listCatatan = [];
     }
     const objekBaru = {
       id: Date.now(),
@@ -49,8 +60,12 @@ app.post("/simpan", (req, res) => {
 
 app.get("/baca-catatan", (req, res) => {
   fs.readFile(pathFile, "utf-8", (err, data) => {
-    if (err || !data) return res.send("Belum ada catatan");
-    const listCatatan = JSON.parse(data);
+    const listCatatan = JSON.parse(data || "[]");
+    if (listCatatan.length === 0) {
+      return res.send(
+        '<h1>Belum ada catatan</h1> <a href="/tambah">+ Tambah Catatan</a>',
+      );
+    }
     let tampilan = `
     <style>
     body {
@@ -124,7 +139,7 @@ app.get("/edit/:id", (req, res) => {
     res.send(`
       <h1>Edit Catatan</h1>
       <form action="/update/${catatanDitemukan.id}" method="POST">
-        <textarea name="isi_baru" rows"4" cols="50">${catatanDitemukan.isi}</textarea><br><br>
+        <textarea name="isi_baru" rows="4" cols="50">${catatanDitemukan.isi}</textarea><br><br>
         <button type="submit">Simpan Perubahan</button>
         </form>
         <br><a href="/baca-catatan">Batal</a>
@@ -191,10 +206,10 @@ app.get("/cari", (req, res) => {
     body {
     font-family: sans-serif; background-color: #f4f4f9; padding:20px}
     .container {
-    max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px:
+    max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px;
     }
     .card {
-    border-left: 5px solid #28a745; background: #f9f9f9: padding: 15px; margin-bottom: 15px; border-radius: 10px;
+    border-left: 5px solid #28a745; background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 10px;
     }
     .waktu {color: #666; font-size: 0.8em;}
     </style>
@@ -212,6 +227,8 @@ app.get("/cari", (req, res) => {
         <div class="card">
         <small class="waktu">${item.waktu}</small>
         <p>${item.isi}</p>
+        <a href="/edit/${item.id}" style="font-size: 0.8em; text-decoration: none; color: #007bff; margin-right: 10px;">Edit</a>
+        <a href="/hapus/${item.id}" onclick="return confirm('Yakin mau dihapus?')" style="font-size: 0.8em; text-decoration: none; color: #ff4d4d;">Hapus</a>
         </div>
         `;
       });
