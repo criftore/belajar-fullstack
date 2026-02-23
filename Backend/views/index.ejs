@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Catatan Saya</title>
+        <style>
+            body {font-family:sans-serif; background: #f4f4f9; padding: 20px;}
+            .container {max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
+            .card {border-left: 5px solid #007bff; background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 10px;}
+            .btn-tambah { display: inline-block; background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+            a { text-decoration: none; color: #007bff; font-size: 0.9em; margin-right: 10px;}
+            .btn-hapus {color:#ff4d4d;}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Catatan Saya</h1>
+            <form action="/cari" method="GET" style="margin-bottom: 20px;">
+    <input type="text" name="keyword" placeholder="Cari catatan..." style="padding: 8px; width: 70%; border-radius: 5px; border: 1px solid #ddd;">
+    <button type="submit" style="padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Cari</button>
+</form>
+
+            <% dataCatatan.forEach(item => { %>
+            <div class="card">
+                <small style="color: #666;"><%= item.waktu %></small>
+                <p style="font-size: 1.1em; margin: 10px 0;"><%= item.isi %></p>
+                <a href="/edit/<%= item.id %>">Edit</a>
+                <a href="/hapus/<%= item.id %>" class="btn-hapus" onclick="return confirm('Yakin mau dihapus?')">Hapus</a>
+            </div>
+           <% }) %>
+
+           <a href="/tambah" class="btn-tambah">+ Tambah Baru</a>
+           <hr>
+           <a href="profil" style="text-decoration: none; color: #666; font-size: 0.8em;">Tentang Pembuat</a>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hasil Pencarian</title>
+        <style>
+            body {font-family: sans-serif; background-color: #f4f4f9; padding: 20px}
+            .container {max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);}
+            .card {border-left: 5px solid #28a745; background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 10px;}
+            .waktu {color: #666; font-size: 0.8em;}
+            .btn-kembali {text-decoration: none; color: #007bff; display: inline-block;  margin-top: 20px;}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Hasil Pencarian</h1>
+            <p>Kata kunci: "<strong><%= keyword %></strong></p>
+            <p>Ditemukan <%=hasil.length %> catatan.</p>
+            <hr>
+
+            <% if (hasil.length === 0) { %>
+            <p>Tidak ada catatan yang cocok.</p>
+        <% } else { %>
+        <% hasil.forEach(item => { %>
+        <div class="card">
+            <small class="waktu"><%= item.waktu %></small>
+            <p><%= item.isi %></p>
+            <a href="/edit/<%= item.id %>" style="font-size: 0.8em; text-decoration: none; color: #007bff; margin-right: 10px;">Edit</a>
+            <a href="/hapus/<%= item.id %>" onclick="return confirm('Yakin mau dihapus?')" style="font-size: 0.8em; text-decoration: none; color: #ff4d4d;">Hapus</a>
+        </div>
+        <% }) %>
+        <% } %>
+
+        <a href="/baca-catatan" class="btn-kembali"> <= Kembali ke Catatan</a>
+        </div>
+    </body>
+</html>
