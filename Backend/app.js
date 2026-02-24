@@ -1,5 +1,5 @@
 const express = require("express");
-const fs = require("fs");
+const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const app = express();
 const port = 3000;
@@ -7,15 +7,16 @@ const port = 3000;
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
-const pathFile = path.join(__dirname, "database_lokal", "catatan.json");
+const db = new sqlite3.Database("./catatan.db", (err) => {
+  if (err) console.error(err.message);
+  console.log("Terhubung ke database SQLite.");
+});
 
-const folderPath = path.join(__dirname, "database_lokal");
-if (!fs.existsSync(folderPath)) {
-  fs.mkdirSync(folderPath);
-}
-if (!fs.existsSync(pathFile)) {
-  fs.writeFileSync(pathFile, JSON.stringify([], null, 2));
-}
+db.run(`CREATE TABLE IF NOT EXISTS tugas (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  waktu TEXT,
+  isi TEXT
+  )`);
 
 app.get("/", (req, res) => {
   res.redirect("/baca-catatan");
@@ -27,6 +28,7 @@ app.get("/tambah", (req, res) => {
 
 app.post("/simpan", (req, res) => {
   const isiBaru = req.body.catatan_baru;
+  const waktuSekarang = new Date().toLocaleString();
 
   if (!isiBaru || isiBaru.trim() === "") {
     return res.send(
@@ -34,99 +36,63 @@ app.post("/simpan", (req, res) => {
     );
   }
 
-  fs.readFile(pathFile, "utf-8", (err, data) => {
-    let listCatatan = JSON.parse(data || "[]");
-    listCatatan.push({
-      id: Date.now(),
-      waktu: new Date().toLocaleString(),
-      isi: isiBaru,
-    });
-    fs.writeFile(pathFile, JSON.stringify(listCatatan, null, 2), (err) => {
+  db.run(
+    `INSERT INTO tugas (waktu, isi) VALUES (?, ?)`,
+    [waktuSekarang, isiBaru],
+    (err) => {
+      if (err) return res.send(err.message);
       res.redirect("/baca-catatan");
-    });
-  });
+    },
+  );
 });
 
 app.get("/baca-catatan", (req, res) => {
-  fs.readFile(pathFile, "utf-8", (err, data) => {
-    const listCatatan = JSON.parse(data || "[]");
-
-    listCatatan.sort((a, b) => b.id - a.id);
-
-    res.render("index", { dataCatatan: listCatatan });
+  db.all("SELECT * FROM tugas ORDER BY id DESC", [], (err, rows) => {
+    if (err) return res.send(err.message);
+    res.render("index", { dataCatatan: rows });
   });
 });
 
 app.get("/edit/:id", (req, res) => {
   const idCari = req.params.id;
 
-  fs.readFile(pathFile, "utf-8", (err, data) => {
-    const listCatatan = JSON.parse(data || "[]");
-    const ditemukan = listCatatan.find((item) => item.id.toString() === idCari);
-
-    if (!ditemukan) return res.send("Catatan tidak ditemukan!");
-
-    res.render("edit", { catatanDitemukan: ditemukan });
+  db.get("SELECT * FROM tugas WHERE id = ?", [idCari], (err, row) => {
+    if (err) return res.send(err.message);
+    if (!row) return res.send("Catatan tidak ditemukan!");
+    res.render("edit", { catatanDitemukan: row });
   });
 });
 
 app.post("/update/:id", (req, res) => {
   const idUpdate = req.params.id;
   const isiTerbaru = req.body.isi_baru;
+  const waktuUpdate = new Date().toLocaleString() + " (Edited)";
 
-  if (!isiTerbaru || isiTerbaru.trim() === "") {
-    return res.send(
-      "<script>alert('Catatan tidak boleh kosong!'); window.history.back();</script>",
-    );
-  }
-
-  fs.readFile(pathFile, "utf-8", (err, data) => {
-    let listCatatan = JSON.parse(data);
-    listCatatan = listCatatan.map((item) => {
-      if (item.id.toString() === idUpdate) {
-        return {
-          ...item,
-          isi: isiTerbaru,
-          waktu: new Date().toLocaleString() + " (Edited)",
-        };
-      }
-      return item;
-    });
-
-    fs.writeFile(pathFile, JSON.stringify(listCatatan, null, 2), (err) => {
+  db.run(
+    `UPDATE tugas SET isi = ?, waktu = ? WHERE id = ?`,
+    [isiTerbaru, waktuUpdate, idUpdate],
+    (err) => {
+      if (err) return res.send(err.message);
       res.redirect("/baca-catatan");
-    });
-  });
+    },
+  );
 });
 
-app.get("/hapus/:idCatatan", (req, res) => {
-  const idYangMauDihapus = req.params.idCatatan;
-
-  fs.readFile(pathFile, "utf-8", (err, data) => {
-    const listCatatan = JSON.parse(data || "[]");
-    const dataBaru = listCatatan.filter(
-      (item) => item.id.toString() !== idYangMauDihapus,
-    );
-    fs.writeFile(pathFile, JSON.stringify(dataBaru, null, 2), (err) => {
-      res.redirect("/baca-catatan");
-    });
+app.get("/hapus/:id", (req, res) => {
+  const idYangMauDihapus = req.params.id;
+  db.run(`DELETE FROM tugas WHERE id = ?`, [idYangMauDihapus], (err) => {
+    if (err) return res.send(err.message);
+    res.redirect("/baca-catatan");
   });
 });
 
 app.get("/cari", (req, res) => {
-  const kataKunci = (req.query.keyword || "").toLowerCase();
-
-  fs.readFile(pathFile, "utf-8", (err, data) => {
-    if (err || !data) return res.send("Database kosong!");
-
-    const listCatatan = JSON.parse(data);
-    const hasilFilter = listCatatan.filter((item) =>
-      item.isi.toLowerCase().includes(kataKunci),
-    );
-
+  const kataKunci = `%${req.query.keyword || ""}%`;
+  db.all("SELECT * FROM tugas WHERE isi LIKE ?", [kataKunci], (err, rows) => {
+    if (err) return res.send(err.message);
     res.render("cari", {
-      hasil: hasilFilter,
-      keyword: kataKunci,
+      hasil: rows,
+      keyword: req.query.keyword,
     });
   });
 });
