@@ -7,3 +7,5 @@
 
 # Mengabaikan file log npm
 npm-debug.log*
+*.sqlite
+.env
