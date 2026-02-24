@@ -28,6 +28,12 @@ app.get("/tambah", (req, res) => {
 app.post("/simpan", (req, res) => {
   const isiBaru = req.body.catatan_baru;
 
+  if (!isiBaru || isiBaru.trim() === "") {
+    return res.send(
+      "<script>alert('Catatan tidak boleh kosong!'); window.history.back();</script>",
+    );
+  }
+
   fs.readFile(pathFile, "utf-8", (err, data) => {
     let listCatatan = JSON.parse(data || "[]");
     listCatatan.push({
@@ -44,6 +50,8 @@ app.post("/simpan", (req, res) => {
 app.get("/baca-catatan", (req, res) => {
   fs.readFile(pathFile, "utf-8", (err, data) => {
     const listCatatan = JSON.parse(data || "[]");
+
+    listCatatan.sort((a, b) => b.id - a.id);
 
     res.render("index", { dataCatatan: listCatatan });
   });
@@ -65,6 +73,12 @@ app.get("/edit/:id", (req, res) => {
 app.post("/update/:id", (req, res) => {
   const idUpdate = req.params.id;
   const isiTerbaru = req.body.isi_baru;
+
+  if (!isiTerbaru || isiTerbaru.trim() === "") {
+    return res.send(
+      "<script>alert('Catatan tidak boleh kosong!'); window.history.back();</script>",
+    );
+  }
 
   fs.readFile(pathFile, "utf-8", (err, data) => {
     let listCatatan = JSON.parse(data);
