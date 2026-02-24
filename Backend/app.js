@@ -1,106 +1,142 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const initSqlJs = require("sql.js"); // Perbaikan: pakai kutip dan huruf kecil
+const fs = require("fs");
 const path = require("path");
+
 const app = express();
 const port = 3000;
+const dbPath = path.join(__dirname, "catatan.db");
 
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-const db = new sqlite3.Database("./catatan.db", (err) => {
-  if (err) console.error(err.message);
-  console.log("Terhubung ke database SQLite.");
+let db;
+
+// Inisialisasi Database (Pasti jalan tanpa NDK)
+initSqlJs().then(function (SQL) {
+  if (fs.existsSync(dbPath)) {
+    const fileBuffer = fs.readFileSync(dbPath);
+    db = new SQL.Database(fileBuffer);
+    console.log("Berhasil memuat database lama.");
+  } else {
+    db = new SQL.Database();
+    db.run(`CREATE TABLE IF NOT EXISTS tugas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            waktu TEXT,
+            isi TEXT
+        )`);
+    saveData();
+    console.log("Database baru dibuat.");
+  }
+  console.log(`Server aktif di http://localhost:${port}`);
 });
 
-db.run(`CREATE TABLE IF NOT EXISTS tugas (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  waktu TEXT,
-  isi TEXT
-  )`);
+// Fungsi untuk menyimpan data ke file fisik
+function saveData() {
+  const data = db.export();
+  const buffer = Buffer.from(data);
+  fs.writeFileSync(dbPath, buffer);
+}
 
-app.get("/", (req, res) => {
-  res.redirect("/baca-catatan");
+// --- ROUTES ---
+
+app.get("/", (req, res) => res.redirect("/baca-catatan"));
+
+app.get("/baca-catatan", (req, res) => {
+  try {
+    const result = db.exec("SELECT * FROM tugas ORDER BY id DESC");
+    // sql.js mengembalikan data dalam format array of objects
+    const rows =
+      result.length > 0
+        ? result[0].values.map((row) => ({
+            id: row[0],
+            waktu: row[1],
+            isi: row[2],
+          }))
+        : [];
+    res.render("index", { dataCatatan: rows });
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
-app.get("/tambah", (req, res) => {
-  res.render("tambah");
-});
+app.get("/tambah", (req, res) => res.render("tambah"));
 
 app.post("/simpan", (req, res) => {
   const isiBaru = req.body.catatan_baru;
   const waktuSekarang = new Date().toLocaleString();
 
-  if (!isiBaru || isiBaru.trim() === "") {
-    return res.send(
-      "<script>alert('Catatan tidak boleh kosong!'); window.history.back();</script>",
-    );
+  if (!isiBaru || isiBaru.trim() === "") return res.send("Catatan kosong!");
+
+  try {
+    db.run("INSERT INTO tugas (waktu, isi) VALUES (?, ?)", [
+      waktuSekarang,
+      isiBaru,
+    ]);
+    saveData();
+    res.redirect("/baca-catatan");
+  } catch (err) {
+    res.send(err.message);
   }
-
-  db.run(
-    `INSERT INTO tugas (waktu, isi) VALUES (?, ?)`,
-    [waktuSekarang, isiBaru],
-    (err) => {
-      if (err) return res.send(err.message);
-      res.redirect("/baca-catatan");
-    },
-  );
-});
-
-app.get("/baca-catatan", (req, res) => {
-  db.all("SELECT * FROM tugas ORDER BY id DESC", [], (err, rows) => {
-    if (err) return res.send(err.message);
-    res.render("index", { dataCatatan: rows });
-  });
 });
 
 app.get("/edit/:id", (req, res) => {
-  const idCari = req.params.id;
+  try {
+    const result = db.exec("SELECT * FROM tugas WHERE id = ?", [req.params.id]);
+    if (result.length === 0) return res.send("Data tidak ada");
 
-  db.get("SELECT * FROM tugas WHERE id = ?", [idCari], (err, row) => {
-    if (err) return res.send(err.message);
-    if (!row) return res.send("Catatan tidak ditemukan!");
-    res.render("edit", { catatanDitemukan: row });
-  });
+    const row = result[0].values[0];
+    const catatanDitemukan = { id: row[0], waktu: row[1], isi: row[2] };
+    res.render("edit", { catatanDitemukan });
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
 app.post("/update/:id", (req, res) => {
-  const idUpdate = req.params.id;
-  const isiTerbaru = req.body.isi_baru;
   const waktuUpdate = new Date().toLocaleString() + " (Edited)";
-
-  db.run(
-    `UPDATE tugas SET isi = ?, waktu = ? WHERE id = ?`,
-    [isiTerbaru, waktuUpdate, idUpdate],
-    (err) => {
-      if (err) return res.send(err.message);
-      res.redirect("/baca-catatan");
-    },
-  );
+  try {
+    db.run("UPDATE tugas SET isi = ?, waktu = ? WHERE id = ?", [
+      req.body.isi_baru,
+      waktuUpdate,
+      req.params.id,
+    ]);
+    saveData();
+    res.redirect("/baca-catatan");
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
 app.get("/hapus/:id", (req, res) => {
-  const idYangMauDihapus = req.params.id;
-  db.run(`DELETE FROM tugas WHERE id = ?`, [idYangMauDihapus], (err) => {
-    if (err) return res.send(err.message);
+  try {
+    db.run("DELETE FROM tugas WHERE id = ?", [req.params.id]);
+    saveData();
     res.redirect("/baca-catatan");
-  });
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
 app.get("/cari", (req, res) => {
-  const kataKunci = `%${req.query.keyword || ""}%`;
-  db.all("SELECT * FROM tugas WHERE isi LIKE ?", [kataKunci], (err, rows) => {
-    if (err) return res.send(err.message);
-    res.render("cari", {
-      hasil: rows,
-      keyword: req.query.keyword,
-    });
-  });
+  const keyword = `%${req.query.keyword || ""}%`;
+  try {
+    const result = db.exec("SELECT * FROM tugas WHERE isi LIKE ?", [keyword]);
+    const rows =
+      result.length > 0
+        ? result[0].values.map((row) => ({
+            id: row[0],
+            waktu: row[1],
+            isi: row[2],
+          }))
+        : [];
+    res.render("index", { dataCatatan: rows });
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
-app.get("/profil", (req, res) => {
-  res.render("profil");
-});
+app.get("/profil", (req, res) => res.render("profil"));
 
-app.listen(port, () => {
-  console.log(`Server sudah jalan di http://localhost:${port}`);
-});
+app.listen(port);
