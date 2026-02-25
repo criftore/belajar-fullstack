@@ -1,17 +1,16 @@
+//Impor library & Konfigurasi Awal
 require("dotenv").config();
-
 const express = require("express");
-const initSqlJs = require("sql.js"); // Perbaikan: pakai kutip dan huruf kecil
+const initSqlJs = require("sql.js");
 const fs = require("fs");
 const path = require("path");
-
 const app = express();
 const port = 3000;
 const dbPath = path.join(__dirname, "catatan.db");
 const session = require("express-session");
 
+//Pengaturan Middleware
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -19,19 +18,17 @@ app.use(
     saveUninitialized: true,
   }),
 );
-
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
 app.use((req, res, next) => {
   res.locals.isLoggedIn = req.session.isLoggedIn || false;
   console.log(`[${new Date().toLocaleString()}] ${req.method} ke ${req.url}`);
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
   next();
 });
 
+//Inisialisasi Database
 let db;
-
-// Inisialisasi Database (Pasti jalan tanpa NDK)
 initSqlJs().then(function (SQL) {
   if (fs.existsSync(dbPath)) {
     const fileBuffer = fs.readFileSync(dbPath);
@@ -49,8 +46,6 @@ initSqlJs().then(function (SQL) {
   }
   console.log(`Server aktif di http://localhost:${port}`);
 });
-
-// Fungsi untuk menyimpan data ke file fisik
 function saveData() {
   const data = db.export();
   const buffer = Buffer.from(data);
@@ -65,6 +60,7 @@ app.get("/login", (req, res) => {
   }
   res.render("login", { pesan: "" });
 });
+
 app.post("/login", (req, res) => {
   const passwordBenar = process.env.APP_PASSWORD;
   const inputPassword = req.body.password;
@@ -79,6 +75,7 @@ app.post("/login", (req, res) => {
   }
 });
 
+//Logout & Proteksi
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/login");
@@ -94,10 +91,10 @@ app.use((req, res, next) => {
   }
 });
 
+//Fitur CRUD
 app.get("/baca-catatan", (req, res) => {
   try {
     const result = db.exec("SELECT * FROM tugas ORDER BY id DESC");
-    // sql.js mengembalikan data dalam format array of objects
     const rows =
       result.length > 0
         ? result[0].values.map((row) => ({
