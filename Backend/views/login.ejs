@@ -1,0 +1,17 @@
+<%- include('header') %>
+
+<div style="text-align: center;">
+    <h1>Halaman Login</h1>
+
+    <% if (pesan) { %>
+        <p style="color: red;"><%= pesan %></p>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <input type="password" name="password" placeholder="Masukkan passwordnya"
+            style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;" autofocus>
+            <button type="submit">Masuk</button>
+        </form>
+</div>
+
+<%- include('footer') %>

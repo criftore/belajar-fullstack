@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const initSqlJs = require("sql.js"); // Perbaikan: pakai kutip dan huruf kecil
 const fs = require("fs");
@@ -6,10 +8,26 @@ const path = require("path");
 const app = express();
 const port = 3000;
 const dbPath = path.join(__dirname, "catatan.db");
+const session = require("express-session");
 
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = req.session.isLoggedIn || false;
+  console.log(`[${new Date().toLocaleString()}] ${req.method} ke ${req.url}`);
+  next();
+});
 
 let db;
 
@@ -41,7 +59,40 @@ function saveData() {
 
 // --- ROUTES ---
 
+app.get("/login", (req, res) => {
+  if (req.session.isLoggedIn) {
+    return res.redirect("/baca-catatan");
+  }
+  res.render("login", { pesan: "" });
+});
+app.post("/login", (req, res) => {
+  const passwordBenar = process.env.APP_PASSWORD;
+  const inputPassword = req.body.password;
+
+  if (inputPassword === passwordBenar) {
+    req.session.isLoggedIn = true;
+    console.log("Login Berhasil!");
+    res.redirect("/baca-catatan");
+  } else {
+    console.log("Login Gagal!");
+    res.render("login", { pesan: "Password Salah!" });
+  }
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
+});
+
 app.get("/", (req, res) => res.redirect("/baca-catatan"));
+
+app.use((req, res, next) => {
+  if (req.url === "/login" || req.session.isLoggedIn) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+});
 
 app.get("/baca-catatan", (req, res) => {
   try {

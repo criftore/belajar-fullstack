@@ -115,13 +115,18 @@
   <body>
     <div class="container">
       <nav>
+        <% if (isLoggedIn) { %>
         <a href="/baca-catatan">Home</a>
         <a href="/tambah">Tambah Catatan</a>
         <a href="/profil">Profil</a>
+        <a href="/logout" style="color: #dc3545; margin-left: 20px;">Log out</a>
 
         <form action="/cari" method="GET" class="search-box">
           <input type="text" name="keyword" placeholder="Cari sesuatu..." required>
           <button type="submit" style="width: auto; padding: 8px 15px;">🔍</button>
         </form>
+        <% } else { %>
+          <span style="font-weight: bold;">Silahkan Login</span>
+          <% } %>
       </nav>
-      </nav>
+      
