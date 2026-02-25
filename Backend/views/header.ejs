@@ -18,6 +18,30 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
+      nav{
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+      }
+      nav a {
+        text-decoration: none;
+        color: #007bff;
+        margin-right: 15px;
+        font-weight: bold;
+      }
+
+      .search-box {
+        margin-top: 10px;
+        display: flex;
+        gap: 5px;
+      }
+      .search-box input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
       .card {
         border-left: 5px solid #007bff;
         background: #f9f9f9;
@@ -44,6 +68,11 @@
       }
       button:hover {
         background: #0056b3;
+      }
+
+      .btn-hapus {
+        color: #dc3545;
+        text-decoration: none;
       }
       .btn-batal {
         color: #666;
@@ -85,3 +114,14 @@
   </head>
   <body>
     <div class="container">
+      <nav>
+        <a href="/baca-catatan">Home</a>
+        <a href="/tambah">Tambah Catatan</a>
+        <a href="/profil">Profil</a>
+
+        <form action="/cari" method="GET" class="search-box">
+          <input type="text" name="keyword" placeholder="Cari sesuatu..." required>
+          <button type="submit" style="width: auto; padding: 8px 15px;">🔍</button>
+        </form>
+      </nav>
+      </nav>

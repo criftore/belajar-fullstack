@@ -1,10 +1,7 @@
 <%- include('header') %>            
     
     <h1>Catatan Saya</h1>
-        <form action="/cari" method="GET" style="margin-bottom: 20px; display: flex; gap: 5px;">
-    <input type="text" name="keyword" placeholder="Cari catatan..." style="flex-grow: 1; padding: 12px; border-radius: 5px; border: 1px solid #ddd;">
-    <button type="submit" style="margin-top: 0; width: auto; background: #28a745;">Cari</button>
-</form>
+        
 
             <% dataCatatan.forEach(item => { %>
             <div class="card">

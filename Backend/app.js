@@ -120,9 +120,13 @@ app.get("/hapus/:id", (req, res) => {
 });
 
 app.get("/cari", (req, res) => {
-  const keyword = `%${req.query.keyword || ""}%`;
+  const kataKunci = req.query.keyword || "";
+  const sqlKeyword = `%${kataKunci}%`;
   try {
-    const result = db.exec("SELECT * FROM tugas WHERE isi LIKE ?", [keyword]);
+    const result = db.exec(
+      "SELECT * FROM tugas WHERE LOWER (isi) LIKE LOWER (?)",
+      [sqlKeyword],
+    );
     const rows =
       result.length > 0
         ? result[0].values.map((row) => ({
@@ -131,7 +135,7 @@ app.get("/cari", (req, res) => {
             isi: row[2],
           }))
         : [];
-    res.render("index", { dataCatatan: rows });
+    res.render("cari", { hasil: rows, keyword: kataKunci });
   } catch (err) {
     res.send(err.message);
   }
