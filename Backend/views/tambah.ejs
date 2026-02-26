@@ -1,9 +1,10 @@
 <%- include('header') %>
         <h1>Tambah Catatan Baru</h1>
-        <form action="/simpan" method="POST">
-            <textarea name="catatan_baru" rows="4" cols="59" placeholder="Ketik catatanmu di sini..."></textarea>
+        <form action="/catatan/simpan" method="POST">
+            <textarea name="catatan_baru" rows="4" cols="59" placeholder="Ketik catatanmu di sini..." required oninvalid="this.setCustomValidity('Waduh, catatannya jangan dikosongin ya!')"
+    oninput="this.setCustomValidity('')"></textarea>
             <br>
             <button type="submit">Simpan Catatan</button>
-            <a href="/baca-catatan" class="btn-batal">Batal</a>
+            <a href="/catatan/baca" class="btn-batal">Batal</a>
         </form>
     <%- include('footer') %>

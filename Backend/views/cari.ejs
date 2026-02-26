@@ -12,11 +12,11 @@
         <div class="card" style="border-left-color: #28a745;">
             <small style="color: #666"><%= item.waktu %></small>
             <p><%= item.isi %></p>
-            <a href="/edit/<%= item.id %>" style="margin-right: 15px;">Edit</a>
-            <a href="/hapus/<%= item.id %>" class="btn-hapus" onclick="return confirm('Yakin mau dihapus?')">Hapus</a>
+            <a href="/catatan/edit/<%= item.id %>" style="margin-right: 15px;">Edit</a>
+            <a href="/catatan/hapus/<%= item.id %>" class="btn-hapus" onclick="return confirm('Yakin mau dihapus?')">Hapus</a>
         </div>
         <% }) %>
         <% } %>
 
-        <a href="/baca-catatan" class="btn-kembali" style="display: block; text-align: center; margin-top: 20px; color: #007bff; text-decoration: none;"> <= Kembali ke Catatan</a>
+        <a href="/catatan/baca" class="btn-kembali" style="display: block; text-align: center; margin-top: 20px; color: #007bff; text-decoration: none;"> <= Kembali ke Catatan</a>
         <%- include('footer') %>

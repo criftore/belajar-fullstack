@@ -8,14 +8,14 @@
                 <small style="color: #666;"><%= item.waktu %></small>
                 <p style="font-size: 1.1em; margin: 10px 0;"><%= item.isi %></p>
                 <div style="display: flex; gap: 15px;">
-                    <a href="/edit/<%= item.id %>">Edit</a>
-                    <a href="/hapus/<%= item.id %>" class="btn-hapus" onclick="return confirm('Yakin mau dihapus?')">Hapus</a>
+                    <a href="/catatan/edit/<%= item.id %>">Edit</a>
+                    <a href="/catatan/hapus/<%= item.id %>" class="btn-hapus" onclick="return confirm('Yakin mau dihapus?')">Hapus</a>
                 </div>
             </div>
            <% }) %>
 
-           <a href="/tambah" class="btn-tambah" style="display: block; text-align: center; background: #007bff; color: white; padding: 15px; border-radius: 5px; text-decoration: none; margin-top: 20px;">+ Tambah Baru</a>
+           <a href="/catatan/tambah" class="btn-tambah" style="display: block; text-align: center; background: #007bff; color: white; padding: 15px; border-radius: 5px; text-decoration: none; margin-top: 20px;">+ Tambah Baru</a>
 
            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-           <a href="profil" style="display: block; text-align: center; color: #666; font-size: 0.8em; text-decoration: none;">Tentang Pembuat</a>
+           <a href="/catatan/profil" style="display: block; text-align: center; color: #666; font-size: 0.8em; text-decoration: none;">Tentang Pembuat</a>
         <%- include('footer') %>

@@ -1,8 +1,8 @@
 <%- include('header') %>
     <h1>Edit Catatan</h1>
-    <form action="/update/<%= catatanDitemukan.id %>" method="POST">
+    <form action="/catatan/update/<%= catatanDitemukan.id %>" method="POST">
       <textarea name="isi_baru" rows="4" cols="50"><%= catatanDitemukan.isi %></textarea><br /><br />
       <button type="submit">Simpan Perubahan</button>
-      <a href="/baca-catatan" class="btn-batal">Batal</a>
+      <a href="/catatan/baca" class="btn-batal">Batal</a>
       </form>
   <%- include('footer') %>

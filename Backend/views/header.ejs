@@ -116,12 +116,12 @@
     <div class="container">
       <nav>
         <% if (isLoggedIn) { %>
-        <a href="/baca-catatan">Home</a>
-        <a href="/tambah">Tambah Catatan</a>
-        <a href="/profil">Profil</a>
+        <a href="/catatan/baca">Home</a>
+        <a href="/catatan/tambah">Tambah Catatan</a>
+        <a href="/catatan/profil">Profil</a>
         <a href="/logout" style="color: #dc3545; margin-left: 20px;">Log out</a>
 
-        <form action="/cari" method="GET" class="search-box">
+        <form action="/catatan/cari" method="GET" class="search-box">
           <input type="text" name="keyword" placeholder="Cari sesuatu..." required>
           <button type="submit" style="width: auto; padding: 8px 15px;">🔍</button>
         </form>
