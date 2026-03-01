@@ -6,6 +6,8 @@ router.get("/baca", (req, res) => {
   const db = getDb();
   try {
     const result = db.exec("SELECT * FROM tugas ORDER BY id DESC");
+    const totalCatatan = result.length > 0 ? result[0].values.length : 0;
+
     const rows =
       result.length > 0
         ? result[0].values.map((row) => ({
@@ -14,7 +16,7 @@ router.get("/baca", (req, res) => {
             isi: row[2],
           }))
         : [];
-    res.render("index", { dataCatatan: rows });
+    res.render("index", { dataCatatan: rows, total: totalCatatan });
   } catch (err) {
     res.send(err.message);
   }

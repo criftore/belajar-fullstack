@@ -1,7 +1,9 @@
 <%- include('header') %>            
     
     <h1>Catatan Saya</h1>
-        
+        <div style="background: #e7f3ff; padding: 10px; border-radius: 8px; margin:15px 0; text-align: center;">
+            <strong>Total Catatan: <%= total %></strong>
+        </div>
 
             <% dataCatatan.forEach(item => { %>
             <div class="card">
